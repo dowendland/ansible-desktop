@@ -1,0 +1,23 @@
+---
+- name: Add Brave Browser gpg key
+  rpm_key:
+    key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    state: present
+  become: yes
+
+- name: Add Brave Browser repository
+  yum_repository:
+    name: brave-browser
+    description: Brave Browser
+    baseurl: https://brave-browser-rpm-release.s3.brave.com/x86_64/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+  become: yes
+
+- name: Install Brave Browser
+  dnf:
+    name: brave-browser
+    state: present
+    update_cache: yes
+  become: yes

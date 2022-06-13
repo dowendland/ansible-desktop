@@ -1,0 +1,27 @@
+---
+- name: Enable the RPM Fusion repositories
+  dnf:
+    name:
+      - "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+      - "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+    state: present
+  become: yes
+
+- name: Upgrade all packages
+  dnf:
+    name: "*"
+    state: latest
+    update_cache: yes
+  become: yes
+
+- name: Install AppStream metadata
+  dnf:
+    name: "@core"
+    state: latest
+  become: yes
+
+- name: Install dnf-plugins-core
+  dnf:
+    name: dnf-plugins-core
+    state: present
+  become: yes

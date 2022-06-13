@@ -1,0 +1,72 @@
+---
+- name: Install GNOME extensions
+  dnf:
+    name:
+      - gnome-extensions-app
+      - gnome-tweaks
+      - gnome-shell-extension-appindicator
+    state: present
+  become: yes
+
+- name: Configure GNOME settings
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value | string }}"
+    state: present
+  loop:
+    - key: "/org/gnome/desktop/interface/clock-show-weekday"
+      value: "true"
+
+    - key: "/org/gnome/desktop/interface/clock-show-date"
+      value: "true"
+
+    - key: "/org/gnome/desktop/interface/clock-format"
+      value: "'24h'"
+
+    - key: "/org/gnome/desktop/calendar/show-weekdate"
+      value: "true"
+
+    - key: "/org/gnome/desktop/interface/show-battery-percentage"
+      value: "true"
+
+    - key: "/org/gnome/desktop/privacy/remove-old-trash-files"
+      value: "true"
+
+    - key: "/org/gnome/desktop/privacy/remove-old-temp-files"
+      value: "true"
+
+    - key: "/org/gnome/settings-daemon/plugins/color/night-light-enabled"
+      value: "true"
+
+    - key: "/org/gnome/settings-daemon/plugins/power/power-button-action"
+      value: "'interactive'"
+
+    - key: "/org/gnome/desktop/peripherals/keyboard/numlock-state"
+      value: "true"
+
+    - key: "/org/gnome/desktop/peripherals/touchpad/natural-scroll"
+      value: "true"
+
+    - key: "/org/gnome/desktop/peripherals/touchpad/tap-to-click"
+      value: "true"
+
+    - key: "/org/gnome/desktop/peripherals/mouse/accel-profile"
+      value: "'flat'"
+
+    - key: "/org/gnome/desktop/wm/keybindings/switch-windows"
+      value: "['<Alt>Tab']"
+
+    - key: "/org/gnome/shell/favorite-apps"
+      value: "['org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'firefox.desktop']"
+
+    - key: "/org/gtk/settings/file-chooser/sort-directories-first"
+      value: "true"
+
+    - key: "/org/gnome/mutter/attach-modal-dialogs"
+      value: "true"
+
+    - key: "/org/gnome/mutter/center-new-windows"
+      value: "true"
+
+    - key: "/org/gnome/mutter/workspaces-only-on-primary"
+      value: "true"

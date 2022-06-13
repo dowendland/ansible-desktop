@@ -1,0 +1,20 @@
+---
+- name: Install the Virtualization package group
+  dnf:
+    name: "@virtualization"
+    state: present
+  become: yes
+
+- name: Start and enable libvirtd
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: yes
+  become: yes
+
+- name: "Add {{ lookup('env', 'USER') }} to libvirt group"
+  user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: libvirt
+    append: yes
+  become: yes

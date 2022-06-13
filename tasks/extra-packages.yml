@@ -1,0 +1,90 @@
+---
+- name: Install CLI tools
+  dnf:
+    name:
+      - alacritty
+      - bat
+      - exa
+      - fish
+      - util-linux-user
+      - neovim
+      - starship
+      - tmux
+      - vim
+      - zsh
+    state: present
+  become: yes
+  tags: ["cli"]
+
+- name: Install development tools
+  dnf:
+    name:
+      - "@development-tools"
+      - git
+      - git-lfs
+      - python3-pip
+      - zeal
+    state: present
+  become: yes
+  tags: ["development"]
+
+- name: Install LaTeX packages
+  dnf:
+    name:
+      - texlive-scheme-full
+      - texstudio
+    state: present
+  become: yes
+  tags: ["latex"]
+
+- name: Install photography software
+  dnf:
+    name:
+      - darktable
+      - gimp
+      - gmic-gimp
+      - hugin
+      - inkscape
+      - luminance-hdr
+      - rapid-photo-downloader
+      - rawtherapee
+    state: present
+  become: yes
+  tags: ["multimedia, image"]
+
+- name: Install gaming software
+  dnf:
+    name:
+      - gamehub
+      - gamemode
+      - goverlay
+      - lutris
+      - mangohud
+      - steam
+    state: present
+  become: yes
+  tags: ["gaming"]
+
+- name: Install flatpaks
+  community.general.flatpak:
+    name:
+      - com.discordapp.Discord
+      - com.getpostman.Postman
+      - com.github.tchx84.Flatseal
+      - com.heroicgameslauncher.hgl
+      - com.spotify.Client
+      - com.usebottles.bottles
+      - net.davidotek.pupgui2
+      - org.gustavoperedo.FontDownloader
+      - org.zotero.Zotero
+      - re.sonny.Tangram
+    state: present
+  tags: ["flatpak"]
+
+- name: Install Python packages
+  pip:
+    name:
+      - protonup
+      - spotdl
+    state: present
+  tags: ["python"]

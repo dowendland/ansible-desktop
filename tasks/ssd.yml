@@ -1,0 +1,117 @@
+---
+- name: Get mounts from /etc/mtab
+  shell: cat /etc/mtab
+  changed_when: no
+  register: mount_options
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses ssd
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['ssd']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses noatime
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['noatime']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses space_cache=v2
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['space_cache=v2']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses commit=120
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['commit=120']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses compress=zstd:1
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['compress=zstd:1']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Ensure fstab uses discard=async
+  ansible.posix.mount:
+    src: "{{ item.split(' ')[0] }}"
+    path: "{{ item.split(' ')[1] }}"
+    fstype: "{{ item.split(' ')[2] }}"
+    opts: "{{ item.split(' ')[3].split(',') | union(['discard=async']) | unique | join(',') }}"
+    state: mounted
+  become: yes
+  with_items: "{{ mount_options.stdout_lines }}"
+  when: item.split(" ")[1] in ["/", "/home"]
+  tags: ["btrfs"]
+
+- name: Start and enable fstrim.timer
+  systemd:
+    name: fstrim.timer
+    state: started
+    enabled: yes
+  become: yes
+  tags: ["trim"]
+
+- name: Set vm.swappiness to 10
+  ansible.posix.sysctl:
+    name: vm.swappiness
+    value: "10"
+    state: present
+  become: yes
+  tags: ["swap"]
+
+- name: Install profile-sync-daemon
+  dnf:
+    name: profile-sync-daemon
+    state: present
+  become: yes
+  tags: ["psd"]
+
+- name: Run profile-sync-daemon
+  command: psd
+  tags: ["psd"]
+
+- name: Start and enable psd.service
+  systemd:
+    name: psd.service
+    state: started
+    enabled: yes
+    scope: user
+  tags: ["psd"]
+
+- name: Run profile-sync-daemon
+  command: psd preview
+  tags: ["psd"]

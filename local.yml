@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - import_tasks: tasks/dnf.yml
+      tags: ["dnf"]
+
+    - import_tasks: tasks/ssd.yml
+      tags: ["ssd"]
+
+    - import_tasks: tasks/rpmfusion.yml
+      tags: ["rpmfusion"]
+
+    - import_tasks: tasks/flatpak.yml
+      tags: ["flatpak"]
+
+    - import_tasks: tasks/extra-packages.yml
+      tags: ["extra-packages"]
+
+    - import_tasks: tasks/firefox.yml
+      tags: ["firefox"]
+
+    - import_tasks: tasks/brave.yml
+      tags: ["brave"]
+
+    - import_tasks: tasks/libvirt.yml
+      tags: ["libvirt"]
+
+    - import_tasks: tasks/vscode.yml
+      tags: ["vscode"]
+
+    - import_tasks: tasks/docker.yml
+      tags: ["docker"]
+
+    - import_tasks: tasks/codecs.yml
+      tags: ["multimedia", "codecs"]
+
+    - import_tasks: tasks/gnome.yml
+      tags: ["gnome"]

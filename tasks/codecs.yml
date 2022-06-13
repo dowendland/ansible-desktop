@@ -1,0 +1,30 @@
+---
+- name: Install the multimedia complement packages
+  dnf:
+    name: "@multimedia"
+    state: latest
+    install_weak_deps: no
+    exclude: PackageKit-gstreamer-plugin
+  become: yes
+
+- name: Install the sound-and-video complement packages
+  dnf:
+    name: "@sound-and-video"
+    state: latest
+  become: yes
+
+- name: Install multimedia codecs
+  dnf:
+    name:
+      - vlc
+      - gstreamer1-plugins-bad-free
+      - gstreamer1-plugins-bad-free-extras
+      - gstreamer1-plugins-good
+      - gstreamer1-plugins-good-extras
+      - gstreamer1-plugins-base
+      - gstreamer1-libav
+      - lame
+      - lame-libs
+      - ffmpeg
+    state: present
+  become: yes
